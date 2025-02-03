@@ -172,6 +172,9 @@ local function sethealth(power)
   end
 end
 
+if fireproximityprompt then
+warn("fireproximityprompt arleady supported in your executor")
+else
 local function fireproximityprompt(instance)
 instance = instance
   if instance then
@@ -201,5 +204,34 @@ error("cmd: fireproximityprompt, instance is not a proximity prompt")
 end
 elseif instance == nil then
 error("cmd: fireproximityprompt, instance not found")
+end
+end
+end
+
+if fireproximityprompt then
+warn("fireproximityprompt arleady supported in your executor")
+else
+local function fireproximityprompt(instance, anotherinstance, mode)
+instance = instance
+  if instance then
+  if instance.ClassName == "TouchTransmitter" then
+  local CFrame = instance.CFrame; local CanCollide = instance.CanCollide
+  instance.Enabled = true; instance.MaxActivationDistance = math.huge; instance.HoldDuration = 0; instance.RequiresLineOfSight = false
+  local function getthing(class)
+    local ListOfPartClasses = {'BasePart','MeshPart','Part'}
+    for i,v in ipairs(ListOfPartClasses) do if class:FindFirstAncestorOfClass(v) then return class:FindFirstAncestorOfClass(v) end end
+  end
+ local qwerty = getthing(instance)
+ old = qwerty.CFrame
+ qwerty.CFrame = game:GetService("Players").LocalPlayer.Character.Head.CFrame + game:GetService("Players").LocalPlayer.Character.Head.CFrame.LookVector * 3
+ task.wait(); instance:InputHoldBegin(); task.wait(); instance:InputHoldEnd()
+ qwerty.CFrame = old
+ instance.Enabled = Enabled; instance.MaxActivationDistance = MaxActivationDistance; instance.HoldDuration = HoldDuration; instance.RequiresLineOfSight = RequiresLineOfSight; instance.Parent = oldparent
+else
+error("cmd: fireproximityprompt, instance is not a proximity prompt")
+end
+elseif instance == nil then
+error("cmd: fireproximityprompt, instance not found")
+end
 end
 end
