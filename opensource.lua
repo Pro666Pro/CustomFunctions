@@ -11,6 +11,7 @@ local TS = game:GetService("TweenService")
 local vimGeneral = Instance.new("VirtualInputManager") or game:GetService("VirtualInputManager")
 local vimComponent = game or game:GetService("VirtualInputManager")
 
+
 local function presskey(key)
   vimGeneral:SendKeyEvent(true, key, false, vimGeneralComponent)
   task.wait()
@@ -74,12 +75,21 @@ local function tptoinstancecframe(instance)
   end
 end
 
-local function tptoinstancepos(instance)
-  place = instance
+local function tptocframe(pos)
+  place = pos
   if place then
-    ass.Position = place.Position
+    ass.CFrame = CFrame.new(place)
   elseif place == nil then
-    error("cmd: tptoinstancepos, instance not found")
+    error("cmd: tptocframe, set cframe coordinates xyz like this: x,y,z")
+  end
+end
+
+local function tptopos(pos)
+  place = pos
+  if place then
+    ass.Position = Vector3.new(place)
+  elseif place == nil then
+    error("cmd: tptopos, set pos coordinates xyz like this: x,y,z")
   end
 end
 
@@ -126,7 +136,7 @@ local function touchinstance(instance)
   end
 end
 
-local function changewalkspeed(power)
+local function setwalkspeed(power)
   number = power
   if number then
     Humanoid.WalkSpeed(number)
@@ -135,7 +145,7 @@ local function changewalkspeed(power)
   end
 end
 
-local function changejumppower(power)
+local function setjumppower(power)
   number = power
   if number then
     Humanoid.JumpPower(number)
@@ -144,7 +154,7 @@ local function changejumppower(power)
   end
 end
 
-local function changehipheight(power)
+local function sethipheight(power)
   number = power
   if number then
     Humanoid.HipHeight(number)
@@ -153,7 +163,7 @@ local function changehipheight(power)
   end
 end
 
-local function changehealth(power)
+local function sethealth(power)
   number = power
   if number then
     Humanoid.Health(number)
@@ -162,3 +172,34 @@ local function changehealth(power)
   end
 end
 
+local function fireproximityprompt(instance)
+instance = instance
+  if instance then
+if not instance.ClassName == "ProximityPrompt" then
+  for i,v in ipairs(instance:GetChildren()) do
+	if v.ClassName == "ProximityPrompt" then
+	instance = v
+	end
+  end
+end
+  if instance.ClassName == "ProximityPrompt" then
+  local old = nil; local Enabled = instance.Enabled; local MaxActivationDistance = instance.MaxActivationDistance; local HoldDuration = instance.HoldDuration; local RequiresLineOfSight = instance.RequiresLineOfSight
+  instance.Enabled = true; instance.MaxActivationDistance = math.huge; instance.HoldDuration = 0; instance.RequiresLineOfSight = false
+  local function getthing(class)
+    local ListOfPartClasses = {'BasePart','MeshPart','Part'}
+    for i,v in ipairs(ListOfPartClasses) do if class:FindFirstAncestorOfClass(v) then return class:FindFirstAncestorOfClass(v) end end
+  end
+ local qwerty = getthing(instance)
+ if not qwerty then oldparent = instance.Parent; instance.Parent = Instance.new("Part", workspace).Transparency = 1; qwerty = instance.Parent end
+ old = qwerty.CFrame
+ qwerty.CFrame = game:GetService("Players").LocalPlayer.Character.Head.CFrame + game:GetService("Players").LocalPlayer.Character.Head.CFrame.LookVector * 3
+ task.wait(); instance:InputHoldBegin(); task.wait(); instance:InputHoldEnd()
+ qwerty.CFrame = old
+ instance.Enabled = Enabled; instance.MaxActivationDistance = MaxActivationDistance; instance.HoldDuration = HoldDuration; instance.RequiresLineOfSight = RequiresLineOfSight; instance.Parent = oldparent
+else
+error("cmd: fireproximityprompt, instance is not a proximity prompt")
+end
+elseif instance == nil then
+error("cmd: fireproximityprompt, instance not found")
+end
+end
